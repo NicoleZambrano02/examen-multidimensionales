@@ -267,7 +267,16 @@
         <parameter key="target_role" value="label"/>
         <list key="set_additional_roles"/>
       </operator>
-      <operator activated="true" class="multiply" compatibility="9.7.000" expanded="true" height="124" name="Multiply" width="90" x="581" y="136"/>
+      <operator activated="true" class="multiply" compatibility="9.7.000" expanded="true" height="145" name="Multiply" width="90" x="581" y="136"/>
+      <operator activated="true" class="write_csv" compatibility="9.7.000" expanded="true" height="82" name="Write CSV" width="90" x="849" y="238">
+        <parameter key="csv_file" value="C:/Users/Nicole/.RapidMiner/repositories/Local Repository/data/fs/training.csv"/>
+        <parameter key="column_separator" value=";"/>
+        <parameter key="write_attribute_names" value="true"/>
+        <parameter key="quote_nominal_values" value="true"/>
+        <parameter key="format_date_attributes" value="true"/>
+        <parameter key="append_to_file" value="false"/>
+        <parameter key="encoding" value="SYSTEM"/>
+      </operator>
       <operator activated="true" class="concurrency:parallel_random_forest" compatibility="9.7.000" expanded="true" height="103" name="Random Forest" width="90" x="715" y="340">
         <parameter key="number_of_trees" value="100"/>
         <parameter key="criterion" value="least_square"/>
@@ -291,7 +300,7 @@
         <list key="application_parameters"/>
         <parameter key="create_view" value="false"/>
       </operator>
-      <operator activated="true" class="h2o:deep_learning" compatibility="9.7.001" expanded="true" height="103" name="Deep Learning" width="90" x="715" y="187">
+      <operator activated="true" class="h2o:deep_learning" compatibility="9.7.001" expanded="true" height="103" name="Deep Learning" width="90" x="849" y="136">
         <parameter key="activation" value="Rectifier"/>
         <enumeration key="hidden_layer_sizes">
           <parameter key="hidden_layer_sizes" value="50"/>
@@ -329,9 +338,18 @@
         <list key="expert_parameters"/>
         <list key="expert_parameters_"/>
       </operator>
-      <operator activated="true" class="apply_model" compatibility="9.7.000" expanded="true" height="82" name="Apply Model (2)" width="90" x="849" y="187">
+      <operator activated="true" class="apply_model" compatibility="9.7.000" expanded="true" height="82" name="Apply Model (2)" width="90" x="983" y="136">
         <list key="application_parameters"/>
         <parameter key="create_view" value="false"/>
+      </operator>
+      <operator activated="true" class="write_csv" compatibility="9.7.000" expanded="true" height="82" name="Write CSV (2)" width="90" x="1117" y="136">
+        <parameter key="csv_file" value="C:/Users/Nicole/.RapidMiner/repositories/Local Repository/data/fs/testing.csv"/>
+        <parameter key="column_separator" value=";"/>
+        <parameter key="write_attribute_names" value="true"/>
+        <parameter key="quote_nominal_values" value="true"/>
+        <parameter key="format_date_attributes" value="true"/>
+        <parameter key="append_to_file" value="false"/>
+        <parameter key="encoding" value="SYSTEM"/>
       </operator>
       <operator activated="true" class="h2o:gradient_boosted_trees" compatibility="9.7.001" expanded="true" height="103" name="Gradient Boosted Trees" width="90" x="715" y="34">
         <parameter key="number_of_trees" value="50"/>
@@ -383,10 +401,14 @@
       <connect from_op="Multiply" from_port="output 1" to_op="Gradient Boosted Trees" to_port="training set"/>
       <connect from_op="Multiply" from_port="output 2" to_op="Deep Learning" to_port="training set"/>
       <connect from_op="Multiply" from_port="output 3" to_op="Random Forest" to_port="training set"/>
+      <connect from_op="Multiply" from_port="output 4" to_op="Write CSV" to_port="input"/>
+      <connect from_op="Write CSV" from_port="through" to_port="result 5"/>
       <connect from_op="Random Forest" from_port="model" to_op="Apply Model (3)" to_port="model"/>
       <connect from_op="Apply Model (3)" from_port="model" to_port="result 3"/>
       <connect from_op="Deep Learning" from_port="model" to_op="Apply Model (2)" to_port="model"/>
+      <connect from_op="Apply Model (2)" from_port="labelled data" to_op="Write CSV (2)" to_port="input"/>
       <connect from_op="Apply Model (2)" from_port="model" to_port="result 4"/>
+      <connect from_op="Write CSV (2)" from_port="through" to_port="result 6"/>
       <connect from_op="Gradient Boosted Trees" from_port="model" to_op="Apply Model" to_port="model"/>
       <connect from_op="Apply Model" from_port="labelled data" to_op="Multiply (3)" to_port="input"/>
       <connect from_op="Apply Model" from_port="model" to_port="result 2"/>
@@ -400,6 +422,8 @@
       <portSpacing port="sink_result 3" spacing="0"/>
       <portSpacing port="sink_result 4" spacing="0"/>
       <portSpacing port="sink_result 5" spacing="0"/>
+      <portSpacing port="sink_result 6" spacing="0"/>
+      <portSpacing port="sink_result 7" spacing="0"/>
     </process>
   </operator>
 </process>
